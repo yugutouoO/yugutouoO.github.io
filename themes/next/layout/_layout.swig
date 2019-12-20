@@ -12,6 +12,7 @@
   {% include '_third-party/analytics/index.swig' %}
 </head>
 
+
 <body itemscope itemtype="http://schema.org/WebPage" lang="{{ page.lang || page.language || config.language }}">
 
   {% set container_class = "container " %}
@@ -88,5 +89,7 @@
   {% include '_third-party/mathjax.swig' %}
   {% include '_third-party/scroll-cookie.swig' %}
   {% include '_third-party/exturl.swig' %}
+  <!-- 页面点击小心心 -->
+  <!-- <script type="text/javascript" src="/js/src/love.js"></script> -->
 </body>
 </html>

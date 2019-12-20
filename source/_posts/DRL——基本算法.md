@@ -1,0 +1,307 @@
+---
+title: DRL——基本算法
+date: 2019-05-13 10:04:01
+tags: 
+- DRL
+top: 10
+categories: DRL 
+---
+# 分类
+
+## model free 和 model based
+
+分类依据就是，对于智能体来说，它会不会尝试去理解环境。
+
+model free：他不理解这个世界是怎样构成的, 也不理解世界对于他的行为会怎么样反馈。
+
++ 在model-free的世界中，机器人只能按部就班，一步一步等待真实世界的反馈，再根据反馈采取下一步行动。
++ 如Q Learning、Sarsa、Policy Gradients
+
+model based：机器人会通过过往的经验, 先理解真实世界是怎样的, 并建立一个模型来模拟现实世界的反馈，对于一些不确定是不是好的策略，可以先在自己建模的世界中取试验一下，再去真实世界实施。
+
++ 在model-based世界中，他能通过想象来预判断接下来将要发生的所有情况，然后选择这些想象情况中最好的那种，并依据这种情况来采取下一步的策略
++ 如AlphaGo在围棋场上战胜人类。
+
+## value based 和 policy based
+
+policy based：根据当前环境，输出下一步可能采取的各种动作的概率，然后根据概率选择action，所以每种action都有可能被选中，只是可能性不同。如 Policy Gradient
+
+value based：根据最高的价值来选择动作，决策更为铁定，毫不留情，就选价值最高的(而基于概率的，即使某个动作的概率最高，也不一定是选择那个动作，是基于动作的概率选择action) 如 Q Learning、Sarsa
+
+同时考虑action的概率和value大小，二者结合的方法，就是Actor-Critic思想，基于Actor-Critic思想衍生出来的方法有DDPG、PPO。Actor会基于概率选择出动作action，而critic会对选择的action进行评判，给出这个action产生的value。
+
+# on-policy和off-policy
+
+在线学习：一边玩一边学习。
+
++ Sarsa
+
+离线学习：是从过往的经验中学习，通过实际去做得到的回报，将一个个的过程存储起来，以供学习。Off Policy
+
++ Q Learning、DQN
+
+# Q Learning
+
+## 算法思想
+Q现实：我根据policy真的在s执行了a后到达了s'得到了奖励r，Q现实是这个真实奖励r+在s'采取任何可能的决策能得到的最大估计收益（从Q表获得），即 $r+maxQ(s')$
+
+Q估计：就是我根据policy估计的在s执行a能得到的r是多少，即 $Q(s, a)$  
+
+Q learning 的迷人之处就是：<font color = red>在Q现实中，又包含了可能产生的s'的最大估计值，将对下一步的衰减的最大估计和当前所得到的奖励当成这一步的现实。</font>并根据真实值和估计值的误差进行反向传播，来更新Q表：$$Q(s, a) = Q(s, a) + \alpha[r + \gamma maxQ(s') - Q(s, a)]$$
+## 具体算法
+![](/images/qlearning.png)
+## 参数含义
+$\epsilon = 0.9$ 时，就说明有90% 的情况我会按照 Q 表的最优值选择行为，10% 的时间使用随机选行为。
+
+$\alpha$是学习率，来决定这次的误差有多少是要被学习的，$\alpha$是一个小于1 的数。
+
+$\gamma$ 是对未来 reward 的衰减值，$\gamma$ 越大，表示越看重未来的收益(因为Q(s')表示未来的收益呀)，$\gamma$ 越小，如果为0，就表示只在乎最近的奖励。
+
+# DQN
+## 基本思想
+
+DQN是从Q learning进行拓展得到的，Q Learning是利用一张Q表维护过往的经历，来得到对s的下一状态的最大估计 $max Q(s')$。 DQN不再用Q表来得到Q估计，而是用神经网络输出对s的最大估计 $ maxQ(s') $。
+
+- DQN 中使用到两个结构相同但参数不同的神经网络，预测 <font color = red>Q 估计</font> 的神经网络具备最新的参数，而预测 <font color = red>Q 现实</font> 的神经网络使用的参数则是很久以前的(预测得到$ maxQ(s') $)
+
+- **experience_replay**是经验池，存储 s, a, r, s_ 这样的条目，每次随机抽取一些之前的经历进行学习，DL中的 mini batch 
+
+针对离散动作，也就是可能执行的动作是离散的。神经网络的输入是状态s，输出是n个可能动作的Q值。
+
++ 对于eval_net而言，就是状态s对应n个action的Q估计，每次以$ \epsilon $的概率选择对s的Q估计最大的action，得到 s', r
++ 对于target_net而言，就是这个状态s'对应n个action的估计，选择对s'的最大估计，从而计算Q现实$=r + \gamma \cdot maxQ(s')$，进而通过Q现实和Q估计进行梯度下降更新参数。
+
+
+# 具体算法
+![](/images/DQN.jpg)
+
+```python
+    def __init__(
+            self,
+            n_actions, 
+            n_features, 
+            learning_rate=0.01,
+            reward_decay=0.9,
+            e_greedy=0.9,
+            replace_target_iter=300,
+            memory_size=500,
+            batch_size=32,
+            e_greedy_increment=None,
+            output_graph=False,
+    ):
+        self.n_actions = n_actions # s的q估计，Q(s, a)有几个
+        self.n_features = n_features # state的维度，几个observation
+        self.lr = learning_rate # $\alpha$
+        self.gamma = reward_decay # $\gamma$
+        self.epsilon_max = e_greedy # $\epsilon$
+        self.replace_target_iter = replace_target_iter # 隔多少步更新target_net的参数
+        self.memory_size = memory_size # experience replay 记忆库的容量，多少条这样的数据 s, a, r, s_
+        self.batch_size = batch_size # 神经网络学习时的随机梯度下降用到的
+        self.epsilon_increment = e_greedy_increment
+        self.epsilon = 0 if e_greedy_increment is not None else self.epsilon_max
+
+        # total learning step
+        self.learn_step_counter = 0 # 记录学了多少步，epsilon会根据它不断的提高
+
+        # initialize zero memory [s, a, r, s_]
+        self.memory = np.zeros((self.memory_size, n_features * 2 + 2)) # 先全部建立为全0的矩阵，高度是多少条，长度是 s, a, r, s_ 一共的长度
+
+        # consist of [target_net, evaluate_net]
+        self._build_net()
+        t_params = tf.get_collection('target_net_params')
+        e_params = tf.get_collection('eval_net_params')
+        self.replace_target_op = [tf.assign(t, e) for t, e in zip(t_params, e_params)]
+
+        self.sess = tf.Session()
+
+        # TensorBoard
+        if output_graph:
+            # $ tensorboard --logdir=logs
+            # tf.train.SummaryWriter soon be deprecated, use following
+            tf.summary.FileWriter("logs/", self.sess.graph)
+
+        self.sess.run(tf.global_variables_initializer()) # tf1.0版本以后，之前是tf.initialize_all_variables，现在改了
+        self.cost_his = [] # 记录每一步的误差，
+```
+
+<font color = red>Q现实 = $r + \gamma maxQ(s')$</font>，$s\_$, $r$通过env.step(a)得到，$maxQ(s')$通过target_net得到
+
+<font color = red>Q估计 = $Q(s, a)$</font>，通过eval_net得到
+
+**q_next**：是输入s_到target_net得到的，是<font color = red>Q现实</font>中的$Q(s')$
+**q_eval**：是输入s到eval_net得到的<font color = red>Q估计</font>Q(s, a)
+
+**experience_memory**：是每次在环境中的 $s, a, r, s\_$  
+
+**batch_memory**：是从experience_memory中取样batch_size个条目构成的
+
+每次训练 batch_size 个，也就是，每次训练我往神经网络里输入batch_size个
+**learn**方法核心部分详解：
+
+```python
+
+    q_next, q_eval = self.sess.run(
+        [self.q_next, self.q_eval],
+        feed_dict={
+            self.s_: batch_memory[:, -self.n_features:],
+            self.s: batch_memory[:, :self.n_features]
+        })
+
+    # 下面这几步十分重要. q_next, q_eval 包含所有 action 的值,
+    # 而我们需要的只是已经选择好的 action 的值, 其他的并不需要.
+    # 所以我们将其他的 action 值全变成 0, 将用到的 action 误差值 反向传递回去, 作为更新凭据.
+    # 这是我们最终要达到的样子, 比如 q_target - q_eval = [1, 0, 0] - [-1, 0, 0] = [2, 0, 0]
+    # q_eval = [-1, 0, 0] 表示这一个记忆中有我选用过 action 0, 而 action 0 带来的 Q(s, a0) = -1, 所以其他的 Q(s, a1) = Q(s, a2) = 0.
+    # q_target = [1, 0, 0] 表示这个记忆中的 r+gamma*maxQ(s_) = 1, 而且不管在 s_ 上我们取了哪个 action,
+    # 我们都需要对应上 q_eval 中的 action 位置, 所以就将 1 放在了 action 0 的位置.
+
+    # 下面也是为了达到上面说的目的, 不过为了更方面让程序运算, 达到目的的过程有点不同.
+    # 是将 q_eval 全部赋值给 q_target, 这时 q_target-q_eval 全为 0,
+    # 不过 我们再根据 batch_memory 当中的 action 这个 column 来给 q_target 中的对应的 memory-action 位置来修改赋值.
+    # 使新的赋值为 reward + gamma * maxQ(s_), 这样 q_target-q_eval 就可以变成我们所需的样子.
+    # 具体在下面还有一个举例说明.
+
+    q_target = q_eval.copy()
+    batch_index = np.arange(self.batch_size, dtype=np.int32)
+    eval_act_index = batch_memory[:, self.n_features].astype(int)
+    reward = batch_memory[:, self.n_features + 1]
+
+    q_target[batch_index, eval_act_index] = reward + self.gamma * np.max(q_next, axis=1)
+```
+也就是说，
+Q估计就是将s输入到eval_net得到的Q(s, a)，每次以$\epsilon$的概率选择Q(s, a)最大的action a，以$1-\epsilon$的概率随机选择一个action a
+Q现实是 $r+\gamma maxQ(s')$，其中r是在env.step(a)得到的，即 s_, r = env.step(a)，然后把$s, a, r, s\_$存储到experience_memory中。那么$Q(s')$呢？它是将s_输入到target_net得到的q_next，但是，这里就需要考虑一下了，你不能直接将q_target = r + max(q_next)，因为q_next是：在s采取a到达s_,得到reward r，然后想要得到s_的Q真实，使得Q(s')最大的action不一定是之前的Q估计中的action，所以在进行损失传递时，需要把这个使Q(s')最大的action放到Q(s, a)选取的那个action那一列，对应位置上。
+
+# Policy Gradient
+[freeCodeCamp](https://medium.freecodecamp.org/an-introduction-to-policy-gradients-with-cartpole-and-doom-495b5ef2207f)
+
+## 算法思想
+我们之前在训练神经网络时，使用最多的方法就是<font color=red>反向传播算法</font>，我们需要一个误差函数，通过梯度下降来使我们的损失最小。但对于强化学习来说，我们不知道动作的正确与否，只能通过<font color = red>奖励值</font>来判断这个动作的相对好坏。基于上面的想法，我们有个非常简单的想法：
+**如果一个动作得到的reward多，那么我们就增大其出现的概率，如果一个动作得到的reward少，我们就减小其出现的概率。**
+根据这个思想，我们构造如下的损失函数：loss= -log(prob)*vt
+
+用freeCodeCamp中的话来说就是，我们怎么知道一个policy是好的？找到使总收益$J(\theta)$最大的policy $\pi_{\theta}$，确定参数$\theta$
+![](/images/pgoptimize.png)
+如何最大化$J(\theta)$？梯度下降法
+
+First Step: the Policy Score function J(θ)
+![](/images/pgoptimize2.png)
+
+Second step: Policy gradient ascent
+![](/images/pgoptimize3.png)
+
+Policy Gradient是回合更新的EPISODE
+
+
+## 具体算法
+![](/images/policygradient.png)
+
+## 总结
+和Qlearning和DQN不同的地方就是：前者是有Q估计和Q真实，以$\epsilon$的概率选择Q值最大的action a；而在policy gradient中，没有Q值，直接得到 s-a map，每次评判动作好坏是根据env.step(a)得到的reward r。最终的优化目标即最大化总reward $J(\theta)$，是通过梯度下降法得到的。
+
+<font color=red>用到了discounted_r，先得到一个回合的 s, a, r条目，然后从后往前计算Q值</font>，$ discounted\_r[n-1] = r_{n-1}+\gamma \cdot discounted\_r[n]$
+
+<font color=red>算法更新</font>：$ minimize\space loss= \sum-log(p)\cdot v$
+
+```python
+        with tf.name_scope('loss'):
+            # to maximize total reward (log_p * R) is to minimize -(log_p * R), and the tf only have minimize(loss)
+            neg_log_prob = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=all_act, labels=self.tf_acts)   # this is negative log of chosen action
+            # or in this way:
+            # neg_log_prob = tf.reduce_sum(-tf.log(self.all_act_prob)*tf.one_hot(self.tf_acts, self.n_actions), axis=1)
+            loss = tf.reduce_mean(neg_log_prob * self.tf_vt)  # reward guided loss
+
+        with tf.name_scope('train'):
+            self.train_op = tf.train.AdamOptimizer(self.lr).minimize(loss)
+```
+
+
+
+
+# Actor Critic
+
+## 算法思想
+之前提到的value_based和policy_based各自优劣：value_based方法可以单步更新，但它处理离散的动作；policy gradient是回合更新，可以处理连续的动作。
+Actor：就是policy gradient
+Critic：就是Qlearning等value_based方法
+Actor Critic + DQN——>DDPG
+
+
+
+# DDPG
+
+<font color=red>Actor用了两个网络</font>
+
+<font color=red>Critic也用了两个网络</font>
+
+<font color=red>$<$。它的的eval_net用于实现实时更新，输入状态s，a，得到对应的Q值。(之前的DQN是输入状态s，得到n个action对应的Q值)，</font>
+
+<font color=red>Actor的target_net用于输入状态s\_，输出action a\_，eval_net用于输入状态s，输出action a，并且实时更新。</font>
+
+<font color=red>**重点是两个eval_net的更新函数**</font>
+
+### actor的更新函数
+
+<font color=red>需要用到对选择这个action的梯度，和critic传过来的评价它的梯度。</font>
+
+![](/Users/jingzhang/2_workspace/blogs/source/images/eval_actor.png)
+
+> 它的前半部分 `grad[Q]` 是从 `Critic` 来的, 这是在说: **这次 Actor 的动作要怎么移动, 才能获得更大的 Q**, 而后半部分 `grad[u]` 是从 `Actor` 来的, 这是在说: **Actor 要怎么样修改自身参数, 使得 Actor 更有可能做这个动作**. 所以两者合起来就是在说: **Actor 要朝着更有可能获取大 Q 的方向修改动作参数了**.
+
+### actor更新具体代码
+
+```python
+    def add_grad_to_graph(self, a_grads):
+        self.policy_grads = tf.gradients(ys=self.a, xs=self.e_params, grad_ys=a_grads)
+        opt = tf.train.AdamOptimizer(-self.lr)  # (- learning rate) for ascent policy
+        self.train_op = opt.apply_gradients(zip(self.policy_grads, self.e_params))
+```
+
+上面的a_grads是从critic的eval_net传过来的
+
+```python
+self.a_grads = tf.gradients(self.q, a)[0] # tensor of gradients of each sample (None, a_dim)
+```
+
+
+
+### critic的更新函数
+
+<font color=red>就是最小化Q估计和Q现实的差。</font>
+
+![](/Users/jingzhang/2_workspace/blogs/source/images/eval_critic.png)
+
+### cirtic更新具体代码
+
+```python
+self.target_q = R + self.gamma * self.q_
+self.loss = tf.reduce_mean(tf.squared_difference(self.target_q, self.q))
+self.train_op = tf.train.AdamOptimizer(self.lr).minimize(self.loss
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

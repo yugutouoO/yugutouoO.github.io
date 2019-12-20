@@ -96,4 +96,5 @@ $(document).ready(function () {
           NexT.utils.displaySidebar();
       }) : NexT.utils.displaySidebar();
   }
+  // NexT.utils.displaySidebar()
 });

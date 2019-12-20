@@ -1,0 +1,322 @@
+---
+title: DL——常用函数手册
+date: 2019-04-15 22:22:56
+tags: 
+- TensorFlow
+- NumPy
+- DL
+top: 10
+categories: DL
+---
+# TensorFlow
+## 函数
+- `tf.Variable` 是一个类
+- `tf.assign(A, new_number)`: 这个函数的功能主要是把A的值变为new_number
+- `tf.random_normal()` 从正态分布输出随机值。
+```
+tf.random.normal(
+    shape,
+    mean=0.0,npm install https://github.com/CodeFalling/hexo-asset-image -- save
+
+    stddev=1.0,
+    dtype=tf.dtypes.float32,
+    seed=None,
+    name=None
+)
+```
+- `tf.reduce_sum()` 压缩求和，降维
+```python
+tf.reduce_sum(
+    input_tensor,
+    axis=None, # 默认对矩阵的所有元素求和；axis = 0，按列求和； axis = 1， 按行求和；
+    keepdims=None, 
+    name=None,
+    reduction_indices=None,
+    keep_dims=None
+)
+```
+举例：
+```python
+# x = [[1,1,1],
+#      [1,1,1]]
+tf.reduce_sum(x)  # 6
+tf.reduce_sum(x, 0)  # [2, 2, 2]
+tf.reduce_sum(x, 1)  # [3, 3]
+```
+
+- `tf.one_hot()`
+```python
+tf.one_hot(
+    indices, # 在indices位置的取on_value，其他位置取off_value，如果不设置，默认on_value取1，off_value取0
+    depth, 
+    on_value=None,
+    off_value=None,
+    axis=None,
+    dtype=None,
+    name=None
+)
+```
+- `tf.layers.dense()` 添加一个全连接层
+```python
+tf.layers.dense(
+    inputs, # 输入的维度
+    units, # 神经元个数
+    activation=None, 
+    use_bias=True,
+    kernel_initializer=None,  # weight的初始化函数
+    bias_initializer=tf.zeros_initializer(), # bias的初始化函数
+    kernel_regularizer=None,
+    bias_regularizer=None,
+    activity_regularizer=None,
+    kernel_constraint=None,
+    bias_constraint=None,
+    trainable=True,
+    name=None,
+    reuse=None
+)
+```
+- `tf.get_variable(<name>, <shape>, <initializer>)`  通过所给的名字创建或是返回一个变量.
+- `tf.clip_by_value(A, min, max)` 输入一个张量A，并把张量中的数值都压缩在min和max之间，这样可以避免一些运算错误（如log0是无效的）。如：`tf.clip_by_value(y, 1, 10)`
+- `tf.log`是以自然对数`e`为底数的，且参数需要是浮点数。
+- `tf.reduce_mean()`，沿着张量的某一维度降维，0表示按列求均值，1表示按行求均值，不写表示对所有元素求均值。
+- `tf.multiply()`
+tf.multiply（）两个矩阵中对应元素各自相乘
+- `tf.matmul()`
+tf.matmul（）将矩阵a乘以矩阵b，生成a * b，矩阵乘法
+```
+tf.reduce_mean()函数作用： 
+沿着tensor的某一维度，计算元素的平均值。由于输出tensor的维度比原tensor的低，这类操作也叫降维。
+参数： 
+reduce_mean(input_tensor,axis=None,keep_dims=False,name=None, reduction_indices=None) 
+input_tensor：需要降维的tensor。 
+axis：axis=none, 求全部元素的平均值；axis=0, 按列降维，求每列平均值；axis=1，按行降维，求每行平均值。 
+keep_dims：若值为True，可多行输出平均值。 
+name：自定义操作的名称。 
+reduction_indices：axis的旧名，已停用。
+```
+
+- `tf.global_variables()` 可以拿到当前计算图上所有的变量
+可以通过变量声明函数中的`trainable`参数来区分需要优化的参数和其他参数
+- `tf.squeeze` 删除张量中值为1的维度
+```
+tf.squeeze(
+    input,
+    axis=None,
+    name=None,
+    squeeze_dims=None
+)
+```
+axis=None默认删除张量中所有**值为1**的维度。
+如
+```
+# 't' is a tensor of shape [1, 2, 1, 3, 1, 1]
+tf.shape(tf.squeeze(t, [2, 4]))  # [1, 2, 3, 1]
+```
+axis=[2, 4]表示删除张量中维度2和维度4中的1（维度，用列数来理解。列数从0开始，所以是删掉第2列和第4列的1）
+
+- `tf.distributions.Normal()` 返回一个正态分布
+loc = mu is the mean, scale = sigma is the std. 
+返回的正态分布的一个方法 sample，从该分布中取样
+```
+sample(
+    sample_shape=(),
+    seed=None,
+    name='sample'
+)
+# Note that a call to sample() without arguments will generate a single sample.
+```
+
+## 变量
+TensorFlow提供了两种创建变量的方法，一种是`tf.Variable()`，另一种是`tf.get_variable()`。`tf.get_variable()`除了可以创建变量外，还能获取变量。当`tf.get_variable()`用于创建变量时，它与`tf.Variable()`的功能是基本等价的。
+
+如果想要达到**重复利用变量**的效果, 我们就要使用 `tf.variable_scope()`, 并搭配 `tf.get_variable()` 这种方式产生和提取变量. 不像 `tf.Variable()` 每次都会产生新的变量, `tf.get_variable()` 如果遇到了同样名字的变量时, 它会单纯的提取这个同样名字的变量(避免产生新变量). 而在重复使用的时候, 一定要在代码中强调 `scope.reuse_variables()`, 否则系统将会报错, 以为你只是单纯的不小心重复使用到了一个变量.
+
+
+
+## 张量
+张量的重要属性
+- 形状shape
+- 数据类型dtype（例如 float32、int32 或 string）
+
+张量的类型
+```
+常量 tf.constant
+变量 tf.Variable
+tf.placeholder
+tf.SparseTensor
+```
+张量的阶
+```
+0	标量（只有大小）
+1	矢量（大小和方向）
+2	矩阵（数据表）
+3	3 阶张量（数据立体）
+n	n 阶张量（自行想象）
+```
+Note
+- 除了 `tf.Variable` 以外，张量的值是不变的，这意味着对于单个执行任务，张量只有一个值。然而，两次评估同一张量可能会返回不同的值；例如，该张量可能是从磁盘读取数据的结果，或是生成随机数的结果。
+- 但是，变量的类型是不能变的
+
+即，一个变量被创建以后，值可以变，类型不能再变。
+
+## placeholder
+```python
+tf.placeholder(dtype, shape=None, name=None)
+```
+
+此函数可以理解为形参，用于定义过程，在执行的时候再赋具体的值
+
+## 会话 Session
+```python
+run(
+    fetches,
+    feed_dict=None,
+    options=None,
+    run_metadata=None
+)
+# 这个是让fetches节点动起来，告诉tensorflow，想要此节点的输出。
+
+# fetches 可以是list或者tensor向量
+
+# feed_dict。替换原图中的某个tensor
+
+sess.run(fetches，feed_dict)
+```
+
+
+
+
+
+
+## 主要步骤
+```python
+import tensorflow as tf
+from numpy.random import RandomState
+
+batch_size = 8
+# 神经网络的参数初始化
+w1 = tf.Variable(tf.random_normal([2, 3], stddev=1, seed=1))
+w2 = tf.Variable(tf.random_normal([3, 1], stddev=1, seed=1))
+# 数据输入
+x = tf.placeholder(tf.float32, [None, 2], name='x-input')
+y_ = tf.placeholder(tf.float32, [None, 1], name='y-input')
+
+# 初始化参数的输出
+a = tf.matmul(x, w1)
+y = tf.matmul(a, w2)
+
+y = tf.sigmoid(y)
+# 定义损失函数
+cross_entropy = -tf.reduce_mean(y_*tf.log(tf.clip_by_value(y, 1e-10, 1.0))
+                                +(1-y_)*tf.log(tf.clip_by_value(1-y, 1e-10, 1.0)))
+# 定义参数优化器
+train_step = tf.train.AdamOptimizer(0.001).minimize(cross_entropy)
+
+rdm = RandomState(1)
+dataset_size = 128
+X = rdm.rand(dataset_size, 2)
+Y = [[int(x1+x2<1)] for (x1, x2) in X]
+
+# 会话开始
+with tf.Session() as sess:
+    # 执行 初始化节点 操作
+    init_op = tf.initialize_all_variables()
+    sess.run(init_op)
+    # print(sess.run(w1))
+    # print(sess.run(w2))
+
+    # 执行 优化 操作
+    STEPS = 5000
+    for i in range(STEPS):
+        start = (i+batch_size)%dataset_size
+        end = min(start+batch_size, dataset_size)
+
+        sess.run(train_step, feed_dict={x: X[start:end], y_: Y[start:end]})
+        if i%1000==0:
+            total_cross_entropy = sess.run(cross_entropy, feed_dict={x: X, y_: Y})
+            print('After %d training step(s), cross entropy on all data is %g' %
+                  (i, total_cross_entropy))
+    # print(sess.run(w1))
+    # print(sess.run(w2))
+```
+总结：
+- 初始化： 神经网络的参数、输入、输出
+- 损失函数 优化器
+- 会话： 执行参数初始化， 执行优化
+
+## TensorBoard
+如果想要在TensorBoard中看网络结构的话，在代码中定义`output_graph`，并设置函数执行时将图保存到logs文件夹下
+```python
+        if output_graph:
+            # $ tensorboard --logdir=logs
+            # tf.train.SummaryWriter soon be deprecated, use following
+            tf.summary.FileWriter("logs/", self.sess.graph)
+```
+
+# Numpy
+## 函数
+- arr.shape[1]
+```python
+test = np.array([[1,2,3],[4,5,6]])
+test.shape[1] # 行的形状，即列数，输出3
+test.shape[0] # 列的形状，即行数，输出2
+```
+- np.random.choice()
+可以从一个int数字或1维array里随机选取内容，并将选取结果放入n维array中返回。
+```python
+numpy.random.choice(a, size=None, replace=True, p=None)
+Parameters:	
+    a :# 随机选的集合，从a里面随机选
+    size : # 从a里面随机选size个元素
+    replace : boolean, optional
+    p : 1-D array-like, optional # 从a里面以概率p的概率选元素，a和p需要是相同shape的，也就是，p中的元素对应a中每个元素被选择的概率，所有sum(p)应该为1
+```
+
+- np.zeros_like(a)
+创建一个和a的shape相同的数组，元素全为0.
+```python
+# a
+# array([[1, 2, 3],
+#       [4, 5, 6]])
+b = np.zeros_like(a)
+# b is
+# array([[0, 0, 0],
+#        [0, 0, 0]])
+```
+- np.mean(a)
+对数组a求均值，如
+```python
+# a is
+# array([[1, 2, 3],
+#       [4, 5, 6]])
+np.mean(a) # 3.5
+# axis = 0：对各列求均值
+# axis = 1 ：对各行求均值
+```
+- np.std(a)
+计算矩阵标准差
+```python
+# axis = 0：对各列标准差
+# axis = 1 ：对各行标准差
+```
+- np.clip()
+```python
+numpy.clip(a, a_min, a_max, out=None)
+Parameters:	
+    a : array
+
+    a_min : # 最小值，即如果array中元素比a_min还小，就置为a_min
+
+    a_max : # 最大值，即如果array中元素比a_max还大，就置为a_max
+```
+举例：
+```python
+>>> a = np.arange(10)
+>>> np.clip(a, 1, 8)
+array([1, 1, 2, 3, 4, 5, 6, 7, 8, 8])
+```
+- `np.random.randint()`
+随机生成low到high之间的整数，如
+```python
+np.random.randint(low=1, high = 11, size = 10) # 随机生成10个1——11的整数，不含11
+```

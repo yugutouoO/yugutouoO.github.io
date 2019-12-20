@@ -342,6 +342,7 @@ $(document).ready(function () {
     },
 
     sidebar: function (integrator) {
+      // NexT.utils.displaySidebar();
       if (CONFIG.sidebar.display === 'always') {
         NexT.utils.displaySidebar();
       }

@@ -3,6 +3,8 @@ title: hexo博客（一）macOS下使用Hexo+Github搭建自己的博客
 date: 2019-04-01 16:53:53
 tags: 
 - Hexo
+- 环境配置
+top: 1
 categories: Tools
 ---
 
