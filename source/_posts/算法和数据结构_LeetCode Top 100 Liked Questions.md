@@ -1,5 +1,5 @@
 ---
-title: 题解——LeetCode Top 100 Liked Questions
+title: LeetCode Top 100 Liked Questions
 date: 2019-04-02 10:17:39
 tags: 
 - LeetCode

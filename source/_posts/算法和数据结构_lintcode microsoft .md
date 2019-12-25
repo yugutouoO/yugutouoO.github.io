@@ -1,5 +1,5 @@
 ---
-title: 题解——lintcode microsoft 
+title: LintCode Microsoft 
 date: 2019-04-13 20:51:18
 tags: 
 - LintCode

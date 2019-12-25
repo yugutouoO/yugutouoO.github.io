@@ -1,5 +1,5 @@
 ---
-title: 'hexo博客（二）hexo博客的配置命令'
+title: hexo博客（二）hexo博客的配置命令
 date: 2019-04-01 19:28:37
 tags:
 - Hexo

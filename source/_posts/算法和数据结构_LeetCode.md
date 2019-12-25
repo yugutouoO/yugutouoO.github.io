@@ -1,5 +1,5 @@
 ---
-title: 题解——LeetCode
+title: LeetCode
 date: 2019-04-16 16:08:35
 tags: 
 - LeetCode
