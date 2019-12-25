@@ -103,7 +103,29 @@ tags:
    display: block; 
 }
 ```
+## 分页显示问题
+[参考](https://github.com/hexojs/hexo/issues/3794)
 
+问题：如图，使用的Next主题，分页这里有些问题，分页显示1，2，3，……9，
+```
+<i class="fa fa-angle-right"></i>
+```
+解决方案：在主题文件夹目录`hexo-theme-next/layout/_partials/pagination.swig`下，修改`escape=false`   
+即：
+```
+{%- if page.prev or page.next %}
+  <nav class="pagination">
+    {{
+      paginator({
+        prev_text: '<i class="fa fa-angle-left" aria-label="' + __('accessibility.prev_page') + '"></i>',
+        next_text: '<i class="fa fa-angle-right" aria-label="' + __('accessibility.next_page') + '"></i>',
+        mid_size : 1,
+        escape   : false
+      })
+    }}
+  </nav>
+{%- endif %}
+```
 ## 插入图片
 + 在`/source`目录下新建`images`文件夹，用于存放图片（如果你想在编辑MarkDown时自动提醒，需要把images文件夹添加到工作区）
 ![](/images/hexo_image.png)
