@@ -1,9 +1,9 @@
 ---
 title: 题解——LeetCode
 date: 2019-04-16 16:08:35
-tags: 题解
-top: 10
-categories: Algorithm
+tags: 
+- LeetCode
+categories: 算法和数据结构
 ---
 # 720. Longest Word in Dictionary
 Given a list of strings words representing an English Dictionary, find the longest word in words that can be built one character at a time by other words in words. If there is more than one possible answer, return the longest word with the smallest lexicographical order.

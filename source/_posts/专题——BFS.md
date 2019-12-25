@@ -1,11 +1,9 @@
 ---
-title: 专题——BFS
+title: BFS
 date: 2019-04-16 15:44:04
 tags: 
-- BFS
-- Tree
-top: 10
-categories: Algorithm
+- 算法题目分类
+categories: 算法和数据结构
 ---
 # LeetCode 994. Rotting Oranges
 In a given grid, each cell can have one of three values:

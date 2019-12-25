@@ -1,9 +1,9 @@
 ---
 title: 题解——lintcode microsoft 
 date: 2019-04-13 20:51:18
-tags: 题解
-top: 10
-categories: Algorithm
+tags: 
+- LintCode
+categories: 算法和数据结构
 ---
 # 53. Reverse Words in a String
 原题：https://www.lintcode.com/problem/reverse-words-in-a-string/description

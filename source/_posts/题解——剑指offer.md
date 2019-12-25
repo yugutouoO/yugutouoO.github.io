@@ -1,9 +1,9 @@
 ---
 title: 题解——剑指offer
 date: 2019-04-01 22:30:53
-tags: 题解
-top: 10
-categories: Algorithm
+tags: 
+- 剑指offer
+categories: 算法和数据结构
 ---
 原题链接：https://www.nowcoder.com/ta/coding-interviews?page=1
 

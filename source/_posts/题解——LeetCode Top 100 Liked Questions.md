@@ -1,9 +1,9 @@
 ---
 title: 题解——LeetCode Top 100 Liked Questions
 date: 2019-04-02 10:17:39
-tags: 题解
-top: 10
-categories: Algorithm
+tags: 
+- LeetCode
+categories: 算法和数据结构
 ---
 
 # LeetCode 198. House Robber
