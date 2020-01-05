@@ -6,9 +6,11 @@ tags:
 categories: 算法和数据结构
 ---
 
+
+
 [[toc]]
 
-# LeetCode 198. House Robber
+# 1. LeetCode 198. House Robber
 原题：https://leetcode.com/problems/house-robber/
 You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security system connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
 
@@ -46,7 +48,7 @@ class Solution(object):
 ```
 Runtime: 24 ms, faster than 35.84% of Python
 
-# LeetCode 62. Unique Paths
+# 2. LeetCode 62. Unique Paths
 原题：https://leetcode.com/problems/unique-paths/
 A robot is located at the top-left corner of a m x n grid (marked 'Start' in the diagram below).
 
@@ -95,7 +97,7 @@ class Solution(object):
 ```
 Runtime: 24 ms, faster than 34.59% 
 
-# LeetCode 64. Minimum Path Sum
+# 3. LeetCode 64. Minimum Path Sum
 原题：https://leetcode.com/problems/minimum-path-sum/
 Given a m x n grid filled with non-negative numbers, find a path from top left to bottom right which minimizes the sum of all numbers along its path.
 
@@ -143,7 +145,7 @@ class Solution(object):
 ```
 Runtime: 164 ms, faster than 13.63%
 
-# LeetCode 96. Unique Binary Search Trees
+# 4. LeetCode 96. Unique Binary Search Trees
 原题：https://leetcode.com/problems/unique-binary-search-trees/
 Given n, how many structurally unique BST's (binary search trees) that store values 1 ... n?
 
@@ -193,7 +195,7 @@ class Solution(object):
         return dp[n]
 
 ```
-# LeetCode 494. Target Sum
+# 5. LeetCode 494. Target Sum
 原题：https://leetcode.com/problems/target-sum/
 You are given a list of non-negative integers, a1, a2, ..., an, and a target, S. Now you have 2 symbols + and -. For each integer, you should choose one from + and - as its new symbol.
 
@@ -236,7 +238,7 @@ class Solution(object):
 ```
 Runtime: 80 ms, faster than 95.04% 
 
-# LeetCode 416. Partition Equal Subset Sum
+# 6. LeetCode 416. Partition Equal Subset Sum
 原题：https://leetcode.com/problems/partition-equal-subset-sum/
 Given a non-empty array containing only positive integers, find if the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.
 
@@ -325,7 +327,7 @@ class Solution(object):
 ```
 Runtime: 712 ms, faster than 52.18%
 
-# LeetCode 438. Find All Anagrams in a String
+# 7. LeetCode 438. Find All Anagrams in a String
 原题：https://leetcode.com/problems/find-all-anagrams-in-a-string/
 Given a string s and a non-empty string p, find all the start indices of p's anagrams in s.
 
@@ -384,7 +386,7 @@ class Solution(object):
         return res
 ```
 
-# LeetCode 141. Linked List Cycle
+# 8. LeetCode 141. Linked List Cycle
 原题：https://leetcode.com/problems/linked-list-cycle/
 Given a linked list, determine if it has a cycle in it.
 
@@ -448,7 +450,7 @@ Runtime: 48 ms, faster than 32.29%
                 return True
         return False
 ```
-# LeetCode 155. Min Stack
+# 9. LeetCode 155. Min Stack
 原题：https://leetcode.com/problems/min-stack/
 Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
 
@@ -499,7 +501,7 @@ Runtime: 56 ms, faster than 55.69%
         if self.minstack:
             return self.minstack[-1]
 ```
-# LeetCode 234. Palindrome Linked List
+# 10. LeetCode 234. Palindrome Linked List
 原题：https://leetcode.com/problems/palindrome-linked-list/
 Given a singly linked list, determine if it is a palindrome.
 
@@ -583,7 +585,7 @@ Runtime: 112 ms, faster than 10.67%
             pre = pre.next
         return True
 ```
-# LeetCode 160. Intersection of Two Linked Lists
+# 11. LeetCode 160. Intersection of Two Linked Lists
 原题：https://leetcode.com/problems/intersection-of-two-linked-lists/
 Write a program to find the node at which the intersection of two singly linked lists begins.
 For example, the following two linked lists:
@@ -670,7 +672,7 @@ Runtime: 212 ms, faster than 51.17%
         return curA
 ```
 
-# LeetCode 102. Binary Tree Level Order Traversal
+# 12. LeetCode 102. Binary Tree Level Order Traversal
 原题：https://leetcode.com/problems/binary-tree-level-order-traversal/
 Given a binary tree, return the level order traversal of its nodes' values. (ie, from left to right, level by level).
 
@@ -726,7 +728,7 @@ Runtime: 24 ms, faster than 99.98%
             in_cnt = 0
         return res 
 ```
-# ★ LeetCode 337. House Robber III
+# 13. ★ LeetCode 337. House Robber III
 The thief has found himself a new place for his thievery again. There is only one entrance to this area, called the "root." Besides the root, each house has one and only one parent house. After a tour, the smart thief realized that "all houses in this place forms a binary tree". It will automatically contact the police if two directly-linked houses were broken into on the same night.
 
 Determine the maximum amount of money the thief can rob tonight without alerting the police.
@@ -776,7 +778,7 @@ Runtime: 40 ms, faster than 79.51%
         res = recursion(root)
         return res[0]
 ```
-# LeetCode 48. Rotate Image
+# 14. LeetCode 48. Rotate Image
 原题：https://leetcode.com/problems/rotate-image/
 You are given an n x n 2D matrix representing an image.
 
@@ -851,7 +853,7 @@ Runtime: 24 ms, faster than 69.54%
             for j in range(i+1, cols):
                 matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
 ```
-# LeetCode 53. Maximum Subarray
+# 15. LeetCode 53. Maximum Subarray
 原题：https://leetcode.com/problems/maximum-subarray/   
 Given an integer array nums, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.
 
@@ -878,7 +880,7 @@ Runtime: 72 ms, faster than 26.54%
             maxsum = max(maxsum, dp[i])
         return maxsum
 ```
-# 1. Two Sum
+# 16. Two Sum
 Given an array of integers, return indices of the two numbers such that they add up to a specific target.
 
 You may assume that each input would have exactly one solution, and you may not use the same element twice.
@@ -923,7 +925,7 @@ Runtime: 36 ms, faster than 65.40%
         return []
 ```
 
-# 39. Combination Sum
+# 17. Combination Sum
 原题：https://leetcode.com/problems/combination-sum/
 Given a set of candidate numbers (candidates) (without duplicates) and a target number (target), find all unique combinations in candidates where the candidate numbers sums to target.
 
@@ -974,7 +976,7 @@ Runtime: 84 ms, faster than 55.82%
 ```
 
 
-# 300. Longest Increasing Subsequence
+# 18. Longest Increasing Subsequence
 原题：https://leetcode.com/problems/longest-increasing-subsequence/
 Given an unsorted array of integers, find the length of longest increasing subsequence.
 
@@ -1050,7 +1052,7 @@ Runtime: 32 ms, faster than 80.94%
         return max(dp)
 ```
 
-# 279. Perfect Squares
+# 19. Perfect Squares
 https://leetcode.com/problems/perfect-squares/
 Given a positive integer n, find the least number of perfect square numbers (for example, 1, 4, 9, 16, ...) which sum to n.
 
@@ -1096,7 +1098,7 @@ class Solution(object):
             dp += min(dp[-i*i] for i in range(1, int(len(dp)**0.5+1))) + 1,
         return dp[n]
 ```
-# 75. Sort Colors
+# 20. Sort Colors
 https://leetcode.com/problems/sort-colors/
 
 Given an array with n objects colored red, white or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white and blue.
@@ -1139,7 +1141,7 @@ Runtime: 20 ms, faster than 95.72%
                 k -= 1
             k += 1
 ```
-# 200. Number of Islands
+# 21. Number of Islands
 https://leetcode.com/problems/number-of-islands/
 
 Given a 2d grid map of '1's (land) and '0's (water), count the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
@@ -1192,7 +1194,7 @@ Runtime: 128 ms, faster than 54.61%
                     result += 1
         return result
 ```
-# 207. Course Schedule
+# 22. Course Schedule
 https://leetcode.com/problems/course-schedule/
 
 There are a total of n courses you have to take, labeled from 0 to n-1.
