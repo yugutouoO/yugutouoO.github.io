@@ -4,7 +4,7 @@ date: 2019-04-01 16:53:53
 tags: 
 - Hexo
 - 环境配置
-categories: 坑#环境#工具
+categories: 坑+环境+工具
 ---
 
 # 安装环境配置
