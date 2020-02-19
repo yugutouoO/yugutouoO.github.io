@@ -2,6 +2,9 @@
 title: 搭建Vultr VPS科学上网
 date: 2020-02-19 19:53:33
 tags:
+- Hexo
+- 环境配置
+categories: 坑+环境+工具
 ---
 
 **搭建服务器科学上网，如Google、Youtube、Pixiv等网站。**
