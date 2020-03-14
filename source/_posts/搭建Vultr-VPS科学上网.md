@@ -1,5 +1,5 @@
 ---
-title: 搭建Vultr VPS科学上网
+title: 搭建Vultr VPS 开启SSR科学上网
 date: 2020-02-19 19:53:33
 tags:
 - Hexo
